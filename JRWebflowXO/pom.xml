@@ -1,0 +1,251 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>jrprototypexo </artifactId>
+    <groupId>net.johnraber</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>JRWebflowXO</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>war</packaging>
+  <name>xo</name>
+  <description />
+	<properties>
+		<org.springframework.version>3.1.2.RELEASE</org.springframework.version>
+		<org.springframework.security.version>3.1.1.RELEASE</org.springframework.security.version>
+		<org.springframework.webflow.version>2.3.1.RELEASE</org.springframework.webflow.version>
+	  <org.hibernate.version>4.1.6.Final</org.hibernate.version>
+	</properties>
+	<build>
+		<finalName>xo</finalName>
+	   <!--   <sourceDirectory>src</sourceDirectory>  -->
+	    <plugins>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.2</version>
+	      	</plugin>
+	      	<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
+			</plugin>
+	    </plugins>
+	  </build>
+	  <dependencies>
+	  <!-- running in Tomcat 7 so servlet spec is 3 -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+		
+		<!--  including btm in this web context for transaction mgr
+		      so jta is a dependency 
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>jta</artifactId>
+			<version>1.1</version>
+  	</dependency>
+  	-->
+  	 
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>1.9.0</version>
+			<scope>test</scope>
+		</dependency>
+			<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.web.servlet</artifactId>
+			<version>${org.springframework.version}</version>
+	      <scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.orm</artifactId>
+			<version>${org.springframework.version}</version>
+	      <scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.transaction</artifactId>
+			<version>${org.springframework.version}</version>
+	      <scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.aop</artifactId>
+			<version>${org.springframework.version}</version>
+	      <scope>compile</scope>
+		</dependency>
+		
+		<!--  needed by Spring AOP to proxy concrete classes ...i.e. POJOs with @Controller annotation -->
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>2.2.2</version>
+		</dependency>
+    
+		 <!--
+	    Various Application Context utilities, including EhCache, JavaMail, Quartz, and 
+	    Freemarker integration.  Define this if you need any of these integrations
+		-->
+		<dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-context-support</artifactId>
+		  <version>${org.springframework.version}</version>
+		</dependency>
+		<!--
+    Object-to-XML Mapping (OXM) abstraction and integration with JAXB, JiBX, Castor, XStream, and XML Beans.
+    (depends on spring-core, spring-beans, spring-context)
+    Define this if you need OXM (org.springframework.oxm.*)
+		-->
+		<dependency>
+		  <groupId>com.thoughtworks.xstream</groupId>
+		  <artifactId>xstream</artifactId>
+		  <version>1.4.3</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-oxm</artifactId>
+		  <version>${org.springframework.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-core</artifactId>
+		    <version>${org.springframework.security.version}</version>
+		 </dependency> 
+		 <dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-web</artifactId>
+		    <version>${org.springframework.security.version}</version>
+		 </dependency> 
+		 <dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-config</artifactId>
+		    <version>${org.springframework.security.version}</version>
+		 </dependency>
+		 <dependency>
+		    <groupId>org.springframework.webflow</groupId>
+		    <artifactId>spring-webflow</artifactId>
+		    <version>${org.springframework.webflow.version}</version>
+		 </dependency> 
+		 <!--  support client's with request header 'accept' set to 'application/json' -->
+		 <dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.9</version>
+		</dependency>
+		<dependency>
+	        <groupId> org.codehaus.btm</groupId>
+	        <artifactId>btm</artifactId>
+	        <version>2.1.3</version>
+		</dependency>
+		
+		<!-- needed to configure Tomcat lib 
+		<dependency>
+	        <groupId> org.codehaus.btm</groupId>
+	        <artifactId>btm-tomcat55-lifecycle</artifactId>
+	        <version>2.1.3</version>
+		</dependency>
+		-->
+		
+		<dependency>  
+		  <groupId>org.hibernate</groupId>  
+		  <artifactId>hibernate-core</artifactId>  
+		  <version>${org.hibernate.version}</version>  
+		</dependency>  
+		<dependency>  
+		  <groupId>org.hibernate</groupId>  
+		  <artifactId>hibernate-entitymanager</artifactId>  
+			<version>${org.hibernate.version}</version>
+		</dependency>  
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+	    <artifactId>hibernate-jpa-2.1-api</artifactId>
+	    <version>1.0.0.Draft-7plus</version>
+    </dependency>
+		<dependency>  
+		    <groupId>org.hibernate</groupId>  
+		    <artifactId>hibernate-ehcache</artifactId>  
+		    <version>${org.hibernate.version}</version>
+		</dependency> 
+		<dependency>  
+		    <groupId>net.sf.ehcache</groupId>  
+		    <artifactId>ehcache-core</artifactId>  
+		    <version>2.6.0</version>
+		</dependency>
+		<dependency>  
+		    <groupId>net.sf.ehcache</groupId>  
+		    <artifactId>ehcache-web</artifactId>  
+		    <version>2.0.4</version>
+		</dependency> 
+		
+		<!-- design/code to JSR 107 API -->
+		<dependency>  
+		    <groupId>net.sf.ehcache</groupId>  
+		    <artifactId>ehcache-jcache</artifactId>  
+		    <version>1.4.0-beta1</version>
+		</dependency> 
+    
+    <!-- declare as provided or exclude from spring jars -->
+    <dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!-- add slf4j interfaces to classpath -->
+		<dependency>
+        <groupId> org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.6.6</version>
+		</dependency>
+		
+		<!-- add commons logging to slf4j bridge to classpath --> 
+    <!-- acts as jcl but routes commons-logging calls to slf4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.6.6</version>
+		</dependency>
+		
+		<!-- add log4j binding to classpath -->
+    <!-- routes slf4j calls to log4j -->
+		<dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>1.6.6</version>
+		</dependency> 
+		
+		<!-- add log4j to classpath -->
+    <!-- does the logging -->
+    <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.17</version>
+		</dependency> 
+		
+		<!-- added for stand-alone testing of RESTful APIs -->
+		<dependency>
+        <groupId> org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.2.1</version>
+		</dependency> 
+		
+	  <dependency>
+        <groupId>postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>9.1-901-1.jdbc4</version>
+        <scope>compile</scope>
+		</dependency> 
+		
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.1</version>
+		</dependency> 
+	</dependencies>
+</project>

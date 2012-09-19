@@ -1,0 +1,6 @@
+<Context>
+   <!--   Not need as not using Tomcat 7 and web declared JNDI entries like one below
+   <Resource name="jdbc/postgresXaDs" auth="Container" type="javax.sql.XADataSource"
+        factory="bitronix.tm.resource.ResourceObjectFactory" uniqueName="jdbc/postgresXaDs" />
+        -->
+</Context>

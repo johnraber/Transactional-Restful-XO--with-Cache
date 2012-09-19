@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	  http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	  http://www.springframework.org/schema/cache
+		http://www.springframework.org/schema/cache/spring-cache-3.1.xsd">
+    
+  <!-- The EhCache cache manager -->
+	<!-- <cache:annotation-driven cache-manager="cacheManager"/>   -->
+
+	
+	<!-- Spring integration for Ehcache library setup    -->
+	<bean id="springEhCacheMgrFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
+		p:configLocation="classpath:properties/ehcache.xml"
+		p:shared="true"
+	/>
+   
+	<bean id="springEhCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager"
+		p:cacheManager-ref="springEhCacheMgrFactory"
+	/>
+	
+	 
+	<!-- 
+	<bean id="xoCacheFactory" class="org.springframework.cache.ehcache.EhCacheFactoryBean"
+	    p:cacheName="xoCache"
+	    p:cacheManager-ref="cacheManager"
+	/>
+	 -->
+	 
+	<!-- <bean id="jcacheXOCache" class="org.springframework.cache.ehcache.EhCacheCache">
+	    <constructor-arg index="0" ref="xoCache"/>
+	</bean>
+	 -->
+	 
+	 
+	<!--  <bean id="ehcacheMgrFactory" class="net.sf.ehcache.CacheManagerFactoryBean"
+		p:configLocation="classpath:properties/ehcache.xml"
+		p:shared="false"
+	/>
+	
+	<bean id="cacheManager" class="net.sf.ehcache.CacheManager"
+		p:cacheManager-ref="ehcacheMgrFactory"
+	/>
+	
+	<bean id="xoCacheFactory" class="net.sf.ehcache.EhCacheFactoryBean"
+	    p:cacheName="xoCache"
+	    p:cacheManager-ref="cacheManager"
+	/>
+	
+	-->
+	
+	<!--  <bean id="jcacheXOCache" class="net.sf.ehcache.jcache.JCache">
+	    <constructor-arg index="0" ref="xoCache"/>
+	</bean>
+	
+	-->
+	
+</beans>

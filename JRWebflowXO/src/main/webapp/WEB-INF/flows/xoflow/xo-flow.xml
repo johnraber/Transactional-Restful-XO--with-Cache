@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/webflow
+http://www.springframework.org/schema/webflow/spring-webflow-2.3.xsd">
+
+   <on-start>
+			<evaluate expression="xoService.createXOSession(merchantId)"
+			result="flowScope.xoSession" />
+	</on-start>
+
+	<view-state id="updateSession" view="updateXO.html" model="flowScope.xoSession" >
+	</view-state>
+	
+	<action-state id="updateSession">
+	  <evaluate expression="xoService.updateXOSession(sessionId)"
+		<transition to="updateSession" />
+	</action-state>
+	
+	<action-state id="commitSession"">
+	  <evaluate expression="xoService.commitXOSession(xoSessionId)"
+		<transition to="commitConfirmed" />
+	</action-state>
+	
+	<action-state id="deletSession">
+	  <evaluate expression="xoService.deleteXOSession(sessionId)"
+		<transition to="deleteConfirmed" />
+	</action-state>
+	
+	
+	<end-state id="commitConfirmed" />
+	<end-state id="deleteConfirmed" />
+	<end-state id="xoSessionCancelled" />
+ 
+ </flow>

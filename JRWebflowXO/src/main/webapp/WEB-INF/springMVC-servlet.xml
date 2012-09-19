@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	    http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+		http://www.springframework.org/schema/jee
+		http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+		http://www.springframework.org/schema/security
+		http://www.springframework.org/schema/security/spring-security-3.1.xsd
+		http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+		
+  <!-- 
+    <import resource="spring-security.xml"/>
+    <import resource="spring-webflow.xml"/>
+   --> 
+   		
+      
+    <jee:jndi-lookup id="xaDataSource" jndi-name="java:/datasources/postgresXaDS" />
+  
+ 
+    <jee:jndi-lookup id="jboss7TxnMgr" jndi-name="java:/TransactionManager" />
+     
+    <!--  Since packagesToScan is being used there is no need for a persistence.xml file
+          to list out classes that need to be managed by the PU ( persistence unit ) --> 
+    <bean id="emf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+			p:dataSource-ref="xaDataSource"
+			p:jpaVendorAdapter-ref="jpaVendorAdapter"
+			p:packagesToScan="net.johnraber.sxo.persistence.model"
+		/>
+    
+    <bean id="jpaVendorAdapter"
+			class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
+			p:database="POSTGRESQL"
+			p:showSql="true"
+			p:generateDdl="false"
+			p:databasePlatform="org.hibernate.dialect.PostgreSQLDialect"
+    />
+
+  <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+   
+   <!-- The Spring JTA transaction manager facade.   -->
+   <bean  id="springJtaTxnMgr"
+      class="org.springframework.transaction.jta.JtaTransactionManager"
+      p:transactionManager-ref="jboss7TxnMgr"
+      p:allowCustomIsolationLevels="false"
+   />
+   
+ 
+    <!-- needed to pick up the classes annotated with @Transactional
+	     and add txn attributes via aspects to them    -->
+		<tx:annotation-driven transaction-manager="springJtaTxnMgr" 
+													proxy-target-class="false"/>
+  
+  	
+  	<context:component-scan base-package="net.johnraber.sxo" />
+	
+		<!-- As of 3.1, registers a RequestMappingHandlerMapping, 
+		 		 RequestMappingHandlerAdapter and an ExceptionHandlerExceptionResolver
+		 		 which are replacements for DefaultAnnotationHandlerMapping,
+		 		 AnnotationMethodHandlerAdapter, and AnnotationMethodHandlerExceptionResolver -->
+		 		 <!-- http://static.springsource.org/schema/mvc/spring-mvc-3.1.xsd -->
+		<!-- http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/new-in-3.1.html#new-in-3.1-handler-method-controller-processing -->
+	 <mvc:annotation-driven />
+
+	
+	 <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		 <property name="order" value="1" />
+		
+		<!-- The extension-less Url will always return Html now and
+         for other data representations the file extension is mandatory 
+         Chrome, Safari and Internet Explorer transmit a wild mixture of
+         Http Accept headers by default so I can not assume it is html
+         cause some send Xml -->
+    <property name="ignoreAcceptHeader" value="true" />
+    
+		<!-- the mediaTypes property is inspected for a matching media type so bla.html is mapped to html view-->
+		<property name="favorPathExtension" value="true" />
+    
+    <property name="mediaTypes">
+        <map>
+           <entry key="json" value="application/json"/>  
+	         <entry key="html" value="text/html"/>
+	         <entry key="xml"  value="application/xml"/>
+        </map>
+    </property> 
+    
+    <property name="defaultContentType" value="text/html" />
+      
+    <property name="viewResolvers">
+      <list>
+	      <ref bean="htmlViewResolver"/>
+			</list>
+		</property>
+    	
+    <!-- these views are only to send back data for async javascript calls
+         where there is no view navigation, only view model updates ....
+         therefore only controllers that use @RequestResponse should
+         be using the default views because the bypass sending back the
+         ModelAndView or View object -->	
+   	<property name="defaultViews">
+ 				<list>
+       		 <bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+       		   <!--  JSON output prefixed with "{} && " to help prevent JSON Hijacking -->
+             <property name="prefixJson" value="true" />
+        	 </bean>
+        	 <bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+        	    <!-- error when marshalling empty model  -->
+            	<constructor-arg>
+          			<bean class="org.springframework.oxm.xstream.XStreamMarshaller" />
+        			</constructor-arg>
+        		</bean>
+        		<bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+            	<constructor-arg>
+          			<bean class="org.springframework.oxm.xstream.XStreamMarshaller" />
+        			</constructor-arg>
+        		</bean>
+        </list>
+    </property>
+	</bean>
+	
+   <bean id="htmlViewResolver"
+		  	class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+		  	p:viewClass="org.springframework.web.servlet.view.InternalResourceView"
+		  	p:order="2"
+				p:prefix="/WEB-INF/views/html/" 
+				p:suffix=".html"
+			/>
+				
+	<!-- now spring dispatch servlet will handle all static content -->
+	<mvc:resources location="/resources/" mapping="/resources/**"/>
+	
+	 <!--   This tag allows for mapping the DispatcherServlet to "/" (thus
+	   overriding the mapping of the container's default Servlet), while still
+	   allowing static resource requests to be handled by the container's 
+	   default Servlet.  This tag is Spring's DefaultServletHttpRequestHandler -->
+	 <mvc:default-servlet-handler/>
+    
+   
+   <import resource="spring-cache.xml" />
+    
+	 <!-- Configure the multipart resolver -->
+        <!--   <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+      one of the properties available; the maximum file size in bytes 
+        <property name="maxUploadSize" value="10000000"/>
+    </bean>
+	  -->
+	  
+	  
+	  <!-- IGNORE everything below as it was for a Tomcat 7 install with Bitronix as Txn Mgr -->
+	  
+	  <!-- Currently, Bitronix can be configured in the Tomcat install so
+       either configure in Spring OR Tomcat not both  -->
+       
+   <!--  this is the default jndi name Bitronix registers with Tomcat
+         when Tomcat is configured to use Bitronix as the Txn Mgr 
+         http://docs.codehaus.org/display/BTM/Tomcat2x -->
+  <!--  <jee:jndi-lookup id="btmTxnMgr" jndi-name="java:comp/UserTransaction" />   -->
+   
+   
+  <!-- The transaction manager services. --> 
+  <!--  <bean id="btmConfig"
+      class="bitronix.tm.TransactionManagerServices"
+      factory-method="getConfiguration"
+      destroy-method="shutdown">
+      <property name="serverId" value="spring-btm" />
+      <property name="disableJmx" value="false" />  
+   </bean>
+  -->
+   
+   <!-- The Bitronix locally created transaction manager. 
+   <bean id="btmTxnMgr"
+      depends-on="emf,xaDataSource,springJtaTxnMgr"
+      class="bitronix.tm.TransactionManagerServices"
+      factory-method="getTransactionManager"
+      destroy-method="shutdown"
+      p:transactionTimeout="600000">
+   </bean>
+   -->
+	  
+	 <!--  <context:property-placeholder location="classpath:/properties/jdbc.properties" />  -->
+	 
+   <!--
+   <util:properties id="driverProperties">
+      <prop key="serverName">localhost</prop>
+      <prop key="portNumber">5432</prop>
+      <prop key="databaseName">jrxopoc</prop>
+      <prop key="user">postgres</prop>
+      <prop key="password">postgres</prop>
+   </util:properties>
+	-->
+   
+    <!-- http://docs.codehaus.org/display/BTM/JdbcConfiguration  -->
+    <!--  
+    <bean id="xaDataSource"
+      class="bitronix.tm.resource.jdbc.PoolingDataSource"
+      init-method="init"
+      destroy-method="close"
+      p:className="org.postgresql.xa.PGXADataSource"
+      p:uniqueName="jdbc/postgresXaDS"
+      p:minPoolSize="1"
+      p:maxPoolSize="5"
+      p:acquireIncrement="1"
+      p:allowLocalTransactions="true"
+      p:driverProperties-ref="driverProperties"
+      p:automaticEnlistingEnabled="true"
+      p:useTmJoin="true"
+      p:testQuery="SELECT 1 FROM DUAL"
+      p:deferConnectionRelease=""
+      p:automaticEnlistingEnabled=""
+      p:acquisitionTimeout=""
+      p:acquisitionInterval=""
+      p:preparedStatementCacheSize=""
+      p:twoPcOrderingPosition=""
+      p:applyTransactionTimeout=""
+      p:ignoreRecoveryFailures="false"
+      p:isolationLevel="READ_COMMITTED" 
+      -->
+	  
+	  <!--  use if loaded by Tomcat and listed in META-INF/context.xml as jndi entry -->
+    <!--   <jee:jndi-lookup id="dataSource" jndi-name="java:jdbc/postgresXaDs" />  -->
+</beans>

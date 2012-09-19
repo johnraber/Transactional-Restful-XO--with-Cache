@@ -1,0 +1,7 @@
+Work in progress illustrating a XO application hosted thru RESTful API calls in Spring MVC.  Exercising a transparent and deterministic ( atomic ) Transaction Management strategy thru
+the application.   Application is layered as to not muddy view, controller, services, storage, messaging, bla, bla, bla but to have it integrate well so that a holistic solution is possible to create quickly and maintain easily.
+
+Deployed on JBoss AS7, Ehcache 2.5, Postgres 9.1:
+  Check the Spring config files ( springMVC-servlet.xml, ...) for the <jee .....> tags that illustrate the names of the XA datasource you need to have created for JNDI lookup.
+
+

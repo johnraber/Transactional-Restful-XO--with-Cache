@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence version="1.0"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+                                 http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd
+                                 http://java.sun.com/xml/ns/persistence/orm
+                                 http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+             xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns="http://java.sun.com/xml/ns/persistence">
+
+  <persistence-unit name="net.johnraber.sxo" transaction-type="JTA">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <jta-data-source>java:/datasources/postgresXaDS</jta-data-source>
+
+ 	  <class>net.johnraber.sxo.persistence.model.XOSession</class>
+  
+    
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+    <properties>
+      <property name="hibernate.max_fetch_depth" value="3"/>
+      <property name="hibernate.hbm2ddl.auto" value="create" />
+      <property name="hibernate.show_sql" value="true" />    
+      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+      <property name="hibernate.query.substitutions" value="true 1, false 0" />
+      
+      <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup" /> 
+    </properties>
+    
+  </persistence-unit>
+    
+</persistence>

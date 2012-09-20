@@ -29,10 +29,10 @@ public class RESTfulSXOClient
 		
 		assert( xoSession2.equals( xoSession ) );
 
-		xoSession.setBuyer("JR");
-		xoSession.setItem("KTM  EXC-F 350");
-		
-		doIt.updateXOSession( String.valueOf(xoSessionId ), xoSession);
+//		xoSession.setBuyer("JR");
+//		xoSession.setItem("KTM  EXC-F 350");
+//		
+//		doIt.updateXOSession( String.valueOf(xoSessionId ), xoSession);
 		
 		doIt.commitXOSession(String.valueOf( xoSession.getXosessionId() )  );
 	}

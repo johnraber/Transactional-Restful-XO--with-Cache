@@ -7,8 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -26,8 +24,8 @@ public class XOSession
 	    
 	    
 	    @Id
-	    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="xosession_seq_gen") 
-	    @SequenceGenerator(name="xosession_seq_gen", sequenceName="sxo.xosession_seq") 
+	    //@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="xosession_seq_gen") 
+	    //@SequenceGenerator(name="xosession_seq_gen", sequenceName="sxo.xosession_seq") 
 	    @Column(name = "xosession_id", unique = true, nullable = false, insertable = true, updatable = true)
 	    private long xosessionId ;     
 	  
@@ -37,6 +35,22 @@ public class XOSession
 		
 		@Column(name = "buyer", unique = false, nullable = true, insertable = true, updatable = true)
 		private String buyer;
+		
+		@Column(name = "merchant", unique = false, nullable = true, insertable = true, updatable = true)
+		private String merchant;
+		
+		@Column(name = "item", unique = false, nullable = true, insertable = true, updatable = true)
+		private String item;
+		
+		@Column(name = "price", unique = false, nullable = true, insertable = true, updatable = true)
+		private String price;
+		
+		@Column(name = "purchaseDate", unique = false, nullable = true, insertable = true, updatable = true)
+		private Date purchaseDate;
+		
+		@Column(name = "shippingAddress", unique = false, nullable = true, insertable = true, updatable = true)
+		private Date shippingAddress;
+		
 		public long getXosessionId() {
 			return xosessionId;
 		}
@@ -79,17 +93,6 @@ public class XOSession
 		public void setShippingAddress(Date shippingAddress) {
 			this.shippingAddress = shippingAddress;
 		}
-		
-		@Column(name = "merchant", unique = false, nullable = true, insertable = true, updatable = true)
-		private String merchant;
-		@Column(name = "item", unique = false, nullable = true, insertable = true, updatable = true)
-		private String item;
-		@Column(name = "price", unique = false, nullable = true, insertable = true, updatable = true)
-		private String price;
-		@Column(name = "purchaseDate", unique = false, nullable = true, insertable = true, updatable = true)
-		private Date purchaseDate;
-		@Column(name = "shippingAddress", unique = false, nullable = true, insertable = true, updatable = true)
-		private Date shippingAddress;
 		
 		
 		@Override

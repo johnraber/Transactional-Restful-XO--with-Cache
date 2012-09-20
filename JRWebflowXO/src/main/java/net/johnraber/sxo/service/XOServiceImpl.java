@@ -9,11 +9,12 @@ import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.cache.ehcache.EhCacheCache;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.johnraber.sxo.model.XOSession;
+import net.johnraber.sxo.persistence.XOSessionDao;
+import net.johnraber.sxo.utility.XOSessionDataUtility;
 
 
 @Service
@@ -28,6 +29,9 @@ public class XOServiceImpl implements XOService
 //	@Autowired
 //	@Qualifier("xoCache")
 	private EhCacheCache   xoCache;
+	
+	@Autowired
+	XOSessionDao xoSessionDao;
 	
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED )
@@ -117,10 +121,12 @@ public class XOServiceImpl implements XOService
 		//TODO use canonical/service level POJO 
 		// for XOSession and persist into database
 		// using the domain model representation
+		net.johnraber.sxo.persistence.model.XOSession domainXOSession =
+				XOSessionDataUtility.createDomainModel(xoSession);
 		
-		
-		log.debug("Committing XO Session: " + xoSession);
+		xoSessionDao.saveXOSession( domainXOSession );
 		xoCache.evict( xoSession.getXosessionId() );
+		log.debug("Persisting XO Session: " + xoSession + " and removing from cache.");
 		
 		return true;
 	}

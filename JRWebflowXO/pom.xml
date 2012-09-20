@@ -25,8 +25,19 @@
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.2</version>
-	      	</plugin>
-	      	<plugin>
+				<configuration>
+          <webResources>
+            <resource>
+              <directory>src/main/webapp/WEB-INF</directory>
+              <targetPath>WEB-INF/classes/META-INF</targetPath>
+              <includes>
+                <include>**/persistence.xml</include>
+              </includes>
+            </resource>
+          </webResources>
+				</configuration>
+	    </plugin>
+	    <plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.5</version>
 			</plugin>

@@ -3,44 +3,24 @@ package net.johnraber.sxo.controller;
 import java.util.HashMap;
 import java.util.Map;
 
-// import javax.validation.Valid;
-
-
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.client.RestClientException;
+
 import org.springframework.web.servlet.ModelAndView;
 
 import net.johnraber.sxo.model.XOSession;
 import net.johnraber.sxo.service.XOService;
 
-
-import org.springframework.cache.Cache.ValueWrapper;
-import org.springframework.cache.ehcache.EhCacheCache;
-import org.springframework.cache.ehcache.EhCacheCacheManager;
-//import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
-
-//import net.sf.ehcache.CacheManager;
-//import net.sf.ehcache.Cache;
-//import net.sf.ehcache.Element;
-
-
-//import org.springframework.webflow.persistence.JpaFlowExecutionListener;
 
 
 /**
@@ -135,7 +115,7 @@ public class XOSessionController {
 
 	@Transactional(propagation=Propagation.REQUIRED)
 	@RequestMapping(value = "/xoSession/{xoSessionID}", method = RequestMethod.POST)
-	public @ResponseBody boolean commitXOSession(@PathVariable Long xoSessionID)
+	public @ResponseBody Boolean commitXOSession(@PathVariable Long xoSessionID)
 	{
 		 return new Boolean(
 				 xoService.commitXOSession(xoSessionID) );

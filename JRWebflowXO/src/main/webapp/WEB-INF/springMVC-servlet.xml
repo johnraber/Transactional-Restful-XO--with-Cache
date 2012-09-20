@@ -31,29 +31,41 @@
     <import resource="spring-webflow.xml"/>
    --> 
    		
-      
-    <jee:jndi-lookup id="xaDataSource" jndi-name="java:/datasources/postgresXaDS" />
+  <!--  created in JBoss 7 container JNDI  -->    
+  <jee:jndi-lookup id="xaDataSource" jndi-name="java:/datasources/postgresXaDS" />
   
- 
-    <jee:jndi-lookup id="jboss7TxnMgr" jndi-name="java:/TransactionManager" />
+  <jee:jndi-lookup id="jboss7TxnMgr" jndi-name="java:/TransactionManager" />
+    
+  <!--  scanning a package and all of its subpackages, looking for classes
+        that could be automatically registered as beans in the Spring container.  -->  
+  <context:component-scan base-package="net.johnraber.sxo" />
+  
+
+  <!-- I've create an entity manager factory but to enable EntityManager injection in Spring Pojo
+       I've gotta add the PersistenceAnnotationBeanPostProcessor --> 
+  <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+  
+  
+  <!-- handle database exception translation to unified spring exception for my DAO s with @Repository -->
+  <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+     
      
     <!--  Since packagesToScan is being used there is no need for a persistence.xml file
           to list out classes that need to be managed by the PU ( persistence unit ) --> 
+          <!-- p:packagesToScan="net.johnraber.sxo.persistence.model" -->
     <bean id="emf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+      p:persistenceUnitName="net.johnraber.sxo"
 			p:dataSource-ref="xaDataSource"
 			p:jpaVendorAdapter-ref="jpaVendorAdapter"
-			p:packagesToScan="net.johnraber.sxo.persistence.model"
 		/>
     
     <bean id="jpaVendorAdapter"
 			class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
 			p:database="POSTGRESQL"
 			p:showSql="true"
-			p:generateDdl="false"
+			p:generateDdl="true"
 			p:databasePlatform="org.hibernate.dialect.PostgreSQLDialect"
     />
-
-  <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
    
    <!-- The Spring JTA transaction manager facade.   -->
    <bean  id="springJtaTxnMgr"
@@ -68,8 +80,6 @@
 		<tx:annotation-driven transaction-manager="springJtaTxnMgr" 
 													proxy-target-class="false"/>
   
-  	
-  	<context:component-scan base-package="net.johnraber.sxo" />
 	
 		<!-- As of 3.1, registers a RequestMappingHandlerMapping, 
 		 		 RequestMappingHandlerAdapter and an ExceptionHandlerExceptionResolver

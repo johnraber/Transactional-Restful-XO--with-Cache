@@ -23,17 +23,18 @@
 	/>
 	
 	 
-	<!-- 
+	<!--  
 	<bean id="xoCacheFactory" class="org.springframework.cache.ehcache.EhCacheFactoryBean"
 	    p:cacheName="xoCache"
-	    p:cacheManager-ref="cacheManager"
+	    p:cacheManager-ref="springEhCacheManager"
 	/>
-	 -->
+	-->
 	 
-	<!-- <bean id="jcacheXOCache" class="org.springframework.cache.ehcache.EhCacheCache">
+	<!-- 
+	<bean id="xoCache" class="org.springframework.cache.ehcache.EhCacheCache">
 	    <constructor-arg index="0" ref="xoCache"/>
 	</bean>
-	 -->
+ -->
 	 
 	 
 	<!--  <bean id="ehcacheMgrFactory" class="net.sf.ehcache.CacheManagerFactoryBean"

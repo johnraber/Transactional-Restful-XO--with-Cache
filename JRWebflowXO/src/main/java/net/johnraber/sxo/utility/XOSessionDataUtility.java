@@ -9,19 +9,16 @@ public class XOSessionDataUtility {
 //		// TODO Auto-generated constructor stub
 //	}
 	
-	public static XOSession createDomainModel(net.johnraber.sxo.model.XOSession xoSession)
+	public static XOSession createPersistentModel(net.johnraber.sxo.model.XOSession xoSession)
 	{
-		XOSession domainXOSession = new XOSession();
-		domainXOSession.setXosessionId( xoSession.getXosessionId());
-		domainXOSession.setBuyer( xoSession.getBuyer() );
-		domainXOSession.setItem( xoSession.getItem() );
-		domainXOSession.setMerchant( xoSession.getMerchant() );
-		domainXOSession.setPrice( xoSession.getPrice() );
-		domainXOSession.setPurchaseDate( xoSession.getPurchaseDate() );
-		domainXOSession.setShippingAddress( xoSession.getShippingAddress() );
-		return domainXOSession;
+		XOSession persistentXOSession = new XOSession();
+		persistentXOSession.setXosessionId( xoSession.getXosessionId());
+		persistentXOSession.setBuyer( xoSession.getBuyer() );
+		persistentXOSession.setItem( xoSession.getItem() );
+		persistentXOSession.setMerchant( xoSession.getMerchant() );
+		persistentXOSession.setPrice( xoSession.getPrice() );
+		persistentXOSession.setPurchaseDate( xoSession.getPurchaseDate() );
+		persistentXOSession.setShippingAddress( xoSession.getShippingAddress() );
+		return persistentXOSession;
 	}
-
-	
-
 }

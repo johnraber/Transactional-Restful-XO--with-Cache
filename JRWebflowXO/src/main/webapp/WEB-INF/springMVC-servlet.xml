@@ -36,6 +36,8 @@
   
   <jee:jndi-lookup id="jboss7TxnMgr" jndi-name="java:/TransactionManager" />
     
+  <import resource="spring-cache.xml" />
+  
   <!--  scanning a package and all of its subpackages, looking for classes
         that could be automatically registered as beans in the Spring container.  -->  
   <context:component-scan base-package="net.johnraber.sxo" />
@@ -162,8 +164,6 @@
 	   default Servlet.  This tag is Spring's DefaultServletHttpRequestHandler -->
 	 <mvc:default-servlet-handler/>
     
-   
-   <import resource="spring-cache.xml" />
     
 	 <!-- Configure the multipart resolver -->
         <!--   <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

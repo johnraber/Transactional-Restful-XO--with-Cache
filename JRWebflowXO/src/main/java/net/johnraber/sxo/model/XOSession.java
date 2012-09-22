@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-
-
 
 
 /**
@@ -16,20 +13,28 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
  * @author jraber
  *
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class XOSession implements Serializable
 {
 	  private static final long serialVersionUID = 1L;
 	  
-	    public XOSession()
-	    {
-	    	
-	    }
+//	    public XOSession()
+//	    {
+//	    	
+//	    }
 	  
 	    private long xosessionId ;     
 	  
-
 		private String buyer;
+	    
+	    private String merchant;
+		
+		private String item;
+		
+		private String price;
+		
+		private Date purchaseDate;
+		
+		private Date shippingAddress;
 		
 		public long getXosessionId() {
 			return xosessionId;
@@ -75,17 +80,6 @@ public class XOSession implements Serializable
 		}
 		
 	
-		private String merchant;
-		
-		private String item;
-		
-		private String price;
-		
-		private Date purchaseDate;
-		
-		private Date shippingAddress;
-		
-	
 		public String getDisplayString()
 		{
 			// return ObjectUtils.getDisplayString(this);
@@ -95,7 +89,7 @@ public class XOSession implements Serializable
 		@Override
 		public String toString()
 		{
-			return super.toString();
+			return ReflectionToStringBuilder.toString(this);
 		}
 		
 		
@@ -115,6 +109,4 @@ public class XOSession implements Serializable
 			return 0;
 		}
 		
-		
-
 }

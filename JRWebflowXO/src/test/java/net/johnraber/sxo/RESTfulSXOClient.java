@@ -1,19 +1,21 @@
 package net.johnraber.sxo;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
 
-import net.johnraber.sxo.model.XOSession;
+import net.johnraber.sxo.model.json.XOSession;
 
 public class RESTfulSXOClient
 {
 	private static final Logger log = LoggerFactory.getLogger(RESTfulSXOClient.class);
 	
-	private StringBuffer XOOSessionUrl = new StringBuffer("http://localhost:8080/xo/xoSession/");
+	private String paramXoSessUrl = "http://localhost:8080/xo/xoSession/{xoSessionID}";
 	
 	public RestTemplate restTemplate = new RestTemplate();
+	
 	
 	public static void main(String[] args) 
 	{
@@ -22,24 +24,22 @@ public class RESTfulSXOClient
 		// Merchant ID
 		XOSession xoSession = doIt.createXOSession("12345");
 		
-		long xoSessionId = xoSession.getXosessionId();
-		
-		
-		XOSession xoSession2 = doIt.getXOSession(String.valueOf(xoSessionId) );
+		XOSession xoSession2 = doIt.getXOSession(
+				String.valueOf( xoSession.getXosessionId() ) );
 		
 		assert( xoSession2.equals( xoSession ) );
 
-//		xoSession.setBuyer("JR");
-//		xoSession.setItem("KTM  EXC-F 350");
-//		
-//		doIt.updateXOSession( String.valueOf(xoSessionId ), xoSession);
+		xoSession.setBuyer("JR");
+		xoSession.setItem("KTM  EXC-F 350");		
 		
-		doIt.commitXOSession(String.valueOf( xoSession.getXosessionId() )  );
+		doIt.updateXOSession(xoSession);
+		
+		doIt.commitXOSession(xoSession);
 	}
 	
 	public RESTfulSXOClient()
 	{
-		
+		// restTemplate.setMessageConverters(messageConverters)
 	}
 	
 	public XOSession createXOSession(String merchantID)
@@ -63,16 +63,15 @@ public class RESTfulSXOClient
 	  return xoSession;
 	}
 	
+	
 	public XOSession getXOSession(String xoSessionID)
 	{
 	  XOSession xoSession = null;
 		
 	  try
 	  {
-		  String xoSessUrl = this.XOOSessionUrl.append( xoSessionID ).toString();
-		  
-		  xoSession = restTemplate.getForObject(xoSessUrl, XOSession.class );
-		
+		 xoSession = restTemplate.getForObject(paramXoSessUrl, XOSession.class, xoSessionID );
+
 		log.info("get XOSession returning: " + xoSession.getDisplayString() );
 	
 	  }
@@ -84,47 +83,52 @@ public class RESTfulSXOClient
 	  return xoSession;
 	}
 	
-	public XOSession updateXOSession(String xoSessionID, XOSession clientXOSession)
+	
+	public void updateXOSession(XOSession clientXOSession)
 	{
-		XOSession serverUpdatedXOSession = null;
-			
 		  try
 		  {
-			  String xoSessUrl = this.XOOSessionUrl.append( xoSessionID ).toString();
+			  restTemplate.put(paramXoSessUrl, clientXOSession, clientXOSession.getXosessionId() );
 			  
-			  restTemplate.put(xoSessUrl, clientXOSession);
-			
-			//  serverUpdatedXOSession = getXOSession(xoSessionID);
-			  
-			 // log.info("updateXOSession returning: " + serverUpdatedXOSession.getDisplayString() );
-			
+			  log.info("Updated XO session: " + clientXOSession.getDisplayString() );
 		  }
 		  catch (Exception e)
 		  {
 		    e.printStackTrace();
 		  } 
-		  
-		  return serverUpdatedXOSession;
-	}
+	}	
 	
 	
 	public void commitXOSession(String xoSessionID)
 	{
+		XOSession xoSession = null;
 		
 		  try
 		  {
-			  String xoSessUrl = this.XOOSessionUrl.append( xoSessionID ).toString();
-			  
-			   restTemplate.postForEntity(xoSessUrl, null, Boolean.class);
+			  xoSession = restTemplate.postForObject(paramXoSessUrl, null, XOSession.class, xoSessionID);
 				
-			  log.info("Successfully commited XO session with id: " + xoSessionID);
-			
+			  log.info("Successfully commited XO session: " + xoSession.getDisplayString() );
 		  }
 		  catch (Exception e)
 		  {
 		    e.printStackTrace();
 		  } 
-		  
+	}	
+	
+	
+	public void commitXOSession(XOSession xoSession)
+	{
+		  try
+		  {
+			  restTemplate.postForObject(paramXoSessUrl, xoSession, XOSession.class, String.valueOf(
+					  xoSession.getXosessionId() ) );
+				
+			  log.info("Successfully commited XO session: " + xoSession.getDisplayString() );
+		  }
+		  catch (Exception e)
+		  {
+		    e.printStackTrace();
+		  } 
 	}	
 	
 }

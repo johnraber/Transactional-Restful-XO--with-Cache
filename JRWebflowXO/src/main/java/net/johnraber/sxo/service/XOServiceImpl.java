@@ -33,6 +33,16 @@ public class XOServiceImpl implements XOService
 	@Autowired
 	XOSessionDao xoSessionDao;
 	
+	// horrible hack for now
+	private static int cacheInited = 1;
+	
+	
+	public XOServiceImpl()
+	{
+//		xoCache = (EhCacheCache) cacheMgr.getCache("xoCache");
+//		log.debug("Used cache manager to retrieve cache: 'xoCache'.");
+	}
+	
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED )
 	public XOSession createXOSession(String merchantID)
@@ -41,6 +51,7 @@ public class XOServiceImpl implements XOService
 		xoSession.setXosessionId( createFauxXOGuid() );
 		xoSession.setMerchant(merchantID);
 		
+//		xoCache.put(xoSession.getXosessionId(), xoSession);
 		getXoCache().put(xoSession.getXosessionId(), xoSession);
 		
 		return xoSession;
@@ -51,7 +62,7 @@ public class XOServiceImpl implements XOService
 	public XOSession getXOSession(Long xoSessionID)
 	{
 		XOSession xoSession = null;
-		
+//		ValueWrapper cachedXOSession = xoCache.get(xoSessionID);
 		ValueWrapper cachedXOSession = getXoCache().get(xoSessionID);
 		
 		if( cachedXOSession != null )
@@ -79,7 +90,7 @@ public class XOServiceImpl implements XOService
 	@Transactional(propagation=Propagation.REQUIRED)
 	public XOSession updateXOSession(XOSession xoSession)
 	{
-		ValueWrapper cachedXOSessionVW = xoCache.get(xoSession.getXosessionId());
+		ValueWrapper cachedXOSessionVW = getXoCache().get(xoSession.getXosessionId());
 		
 		if( cachedXOSessionVW != null )
 		{
@@ -89,43 +100,74 @@ public class XOServiceImpl implements XOService
 			// then either perform a merge based on rules or server wins and
 			// client ( aka UI ) needs to adjust
 
-			xoCache.put(xoSession.getXosessionId(), xoSession); // this is JSR107 method
+			getXoCache().put(xoSession.getXosessionId(), xoSession); // this is JSR107 method
+			
+			log.info("Updated XO Session in cache: " + xoSession.getDisplayString()  );
+		}
+		else
+		{
+			log.info("Could NOT updated XO Session in cache: " + xoSession.getDisplayString() + " as the entity does NOT already exist"  );
+			return null;
 		}
 	   
 		// this is either merged or what caller sent in
 		return xoSession;
 	}
 	
+	
+	/**
+	 * This method assumes caller knows the current state ( server version )
+	 * of the XOSession and wants to persist it.  Providing this method so 
+	 * the entire XOSession object does not have to be passed through 
+	 * for performance ( speed, network bandwidth, ...
+	 * no data movement or processing needed ).  Use 
+	 * commitXOSession(XOSession xoSession) if you need to pass in 
+	 * changes and commit the resource.
+	 *  
+	 */
 	@Transactional(propagation=Propagation.REQUIRED)
-	public boolean commitXOSession(Long xoSessionID)
+	public XOSession commitXOSession(Long xoSessionID)
 	{
-		ValueWrapper cachedXOSessionVW = xoCache.get(xoSessionID);
+		ValueWrapper cachedXOSessionVW = getXoCache().get(xoSessionID);
 		
 		if( cachedXOSessionVW != null )
 		{
 			XOSession cachedXOSession = (XOSession) cachedXOSessionVW.get();
 		
-			return this.commitXOSession(cachedXOSession);
+			if( commitXOSession(cachedXOSession) )
+			{
+				return cachedXOSession;
+			}
+			return null;
 		}
 		else 
 		{
 			log.debug("XO Session: " + xoSessionID + " does NOT exists in cache so can NOT be committed!");
-			return false;
+			return null;
 		}
 	}
 	
 	
+	/**
+	 * This version of the xoSession will be committed with no
+	 * merge/biz rules run of the XO session.  LAST in WINS!
+	 * @param xoSession
+	 * @return
+	 */
 	@Transactional(propagation=Propagation.REQUIRED)
-	protected boolean commitXOSession(XOSession xoSession)
+	public boolean commitXOSession(XOSession xoSession)
 	{
 		//TODO use canonical/service level POJO 
 		// for XOSession and persist into database
 		// using the domain model representation
 		net.johnraber.sxo.persistence.model.XOSession domainXOSession =
-				XOSessionDataUtility.createDomainModel(xoSession);
+				XOSessionDataUtility.createPersistentModel(xoSession);
 		
+		//TODO in real world ensure save is not a created/merge because
+		// you want to throw if the XOSession already exists
 		xoSessionDao.saveXOSession( domainXOSession );
-		xoCache.evict( xoSession.getXosessionId() );
+		
+		getXoCache().evict( xoSession.getXosessionId() );
 		log.debug("Persisting XO Session: " + xoSession + " and removing from cache.");
 		
 		return true;
@@ -133,7 +175,8 @@ public class XOServiceImpl implements XOService
 	
 	private long createFauxXOGuid()
 	{
-		return (long) 1234567890;
+		double ohyeah = 10000;
+		return (long) ( Math.random() * ohyeah );
 	}
 	
 	// using get method because am not able to
@@ -142,10 +185,31 @@ public class XOServiceImpl implements XOService
 	// dependent resources in ecache init
 	public EhCacheCache getXoCache()
 	{
-		if( xoCache == null)
+		if( cacheMgr == null )
 		{
-			xoCache = (EhCacheCache) cacheMgr.getCache("xoCache");
+			log.error("Cache manager is null ... dead in the water ... returning null!");
+			return null;
 		}
+		
+		
+		if( xoCache == null || cacheInited == 1)
+		{
+			org.springframework.cache.Cache bla = cacheMgr.getCache("xoCache");
+			if( bla instanceof EhCacheCache)
+			{
+				xoCache = (EhCacheCache) cacheMgr.getCache("xoCache");
+				log.debug("Had to use cache manager to retrieve cache since cache variable was null: 'xoCache'.");
+			}
+			else
+			{
+				log.error("Cache manager retrieving the wrong flavor of cache ( Spring instead of EhCache )!");
+				return null;
+			}
+			
+		}
+
+		cacheInited++;
+	
 		return xoCache;
 	}
 

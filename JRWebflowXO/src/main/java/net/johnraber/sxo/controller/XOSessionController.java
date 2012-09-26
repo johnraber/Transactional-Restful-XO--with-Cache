@@ -202,7 +202,7 @@ public class XOSessionController {
 	 */
 	@Transactional(propagation=Propagation.REQUIRED)
 	@RequestMapping(value = "/xoSession/{xoSessionID}", method = RequestMethod.DELETE)
-	public Boolean deleteXOSession(@PathVariable Long xoSessionID)
+	public @ResponseBody Boolean deleteXOSession(@PathVariable Long xoSessionID)
 	{
 		log.info("deleting XO session with ID: " +  xoSessionID );	
 		return xoService.deleteXOSession(xoSessionID);

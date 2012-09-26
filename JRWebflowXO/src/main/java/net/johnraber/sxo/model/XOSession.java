@@ -17,11 +17,6 @@ public class XOSession implements Serializable
 {
 	  private static final long serialVersionUID = 1L;
 	  
-//	    public XOSession()
-//	    {
-//	    	
-//	    }
-	  
 	    private long xosessionId ;     
 	  
 		private String buyer;

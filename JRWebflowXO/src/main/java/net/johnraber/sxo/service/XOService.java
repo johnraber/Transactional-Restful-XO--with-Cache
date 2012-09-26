@@ -59,4 +59,7 @@ public interface XOService
 	
 	@Transactional(propagation=Propagation.REQUIRED)
 	XOSession getArchivedXOSession(Long xoSessionID);
+	
+	@Transactional(propagation=Propagation.REQUIRED)
+	public Boolean deleteXOSession(Long xoSessionID);
 }

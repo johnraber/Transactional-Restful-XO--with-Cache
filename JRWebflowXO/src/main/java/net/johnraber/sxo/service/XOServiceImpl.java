@@ -212,5 +212,15 @@ public class XOServiceImpl implements XOService
 	
 		return xoCache;
 	}
+	
+	@Transactional(propagation=Propagation.REQUIRED)
+	public Boolean deleteXOSession(Long xoSessionID)
+	{
+		
+		getXoCache().evict(xoSessionID);
+		log.debug("Deleted XO Session: " + xoSessionID + "  from cache.");
+		return new Boolean(true);
+		
+	}
 
 }

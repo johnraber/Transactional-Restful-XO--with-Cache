@@ -145,7 +145,6 @@ public class XOSessionController {
 	@RequestMapping(value = "/xoSession/{xoSessionID}", method = RequestMethod.PUT)
 	public @ResponseBody XOSession updateXOSession(@PathVariable Long xoSessionID, @RequestBody XOSession xoSession) 
 	{
-		log.info("updating XO session with ID: " +  xoSessionID );	
 		log.info("updating XO session: " + xoSession.getDisplayString() );	
 		return XOSessionUtility.createJsonModel(
 			xoService.updateXOSession( XOSessionUtility.createDomainModel(xoSession) ) );
@@ -192,6 +191,21 @@ public class XOSessionController {
 			return xoSession;
 		}
 		return null;
+	}
+	
+	
+	/**
+	 * 
+	 * @param xoSessionID
+	 * @param xoSession  deletes the XO session that is currently stored
+	 * in conversational cache
+	 */
+	@Transactional(propagation=Propagation.REQUIRED)
+	@RequestMapping(value = "/xoSession/{xoSessionID}", method = RequestMethod.DELETE)
+	public Boolean deleteXOSession(@PathVariable Long xoSessionID)
+	{
+		log.info("deleting XO session with ID: " +  xoSessionID );	
+		return xoService.deleteXOSession(xoSessionID);
 	}
 	
 	

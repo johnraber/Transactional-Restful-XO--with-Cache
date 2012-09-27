@@ -1,7 +1,75 @@
-Work in progress illustrating a XO application hosted thru RESTful API calls in Spring MVC.  Exercising a transparent and deterministic ( atomic ) Transaction Management strategy thru
+Complete application illustrating a XO application hosted thru RESTful API calls in Spring MVC.  Exercising a transparent and deterministic ( atomic ) Transaction Management strategy thru
 the application.   Application is layered as to not muddy view, controller, services, storage, messaging, bla, bla, bla but to have it integrate well so that a holistic solution is possible to create quickly and maintain easily.
 
 Deployed on JBoss AS7, Ehcache 2.5, Postgres 9.1:
   Check the Spring config files ( springMVC-servlet.xml, ...) for the <jee .....> tags that illustrate the names of the XA datasource you need to have created for JNDI lookup.
+
+
+  Setting up your environment
+
+ Install Oracle JDK 1.7
+ Install Jboss AS 7 
+ Install Postgres 9.1 or your favorite database
+ Create a Data source modle in JBoss by:
+     Create a postgres directory in /Applications/jboss-as-7.1.1.Final/modules/org/
+
+     Create a module.xml file in  /Applications/jboss-as-7.1.1.Final/modules/org/postgres
+
+                <?xml version="1.0" encoding="UTF-8"?>
+				<module xmlns="urn:jboss:module:1.0" name="org.postgres">
+				  <resources>
+				    <resource-root path="postgresql-9.1-902.jdbc4.jar"/>
+				  </resources>
+				   <dependencies>
+				     <module name="javax.api"/>
+				     <module name="javax.transaction.api"/>
+				   </dependencies>
+				</module>
+
+ Copy the XA compliant database driver into Jboss  ...... /Applications/jboss-as-7.1.1.Final/modules/org/postgres/postgresql-9.1-902.jdbc4.jar 
+
+ Configure your specific deployment config to create a datasource .... in my case  thats /Applications/jboss-as-7.1.1.Final/standalone/configuration/standalone-full.xml
+  ......... so I added the postgres config below to the existing datasource stanza
+  <subsystem xmlns="urn:jboss:domain:datasources:1.0">
+  
+                <xa-datasource jta="true" jndi-name="java:/datasources/postgresXaDS" pool-name="postgresXaDS" enabled="true" use-java-context="true" use-ccm="true">
+                    <xa-datasource-property name="serverName">
+                        localhost
+                    </xa-datasource-property>
+                    <xa-datasource-property name="databaseName">
+                        jrxopoc
+                    </xa-datasource-property>
+                    <xa-datasource-property name="portNumber">
+                        5432
+                    </xa-datasource-property>
+                    <driver>postgres</driver>
+                    <xa-pool>
+                        <is-same-rm-override>false</is-same-rm-override>
+                        <interleaving>false</interleaving>
+                        <pad-xid>false</pad-xid>
+                        <wrap-xa-resource>false</wrap-xa-resource>
+                    </xa-pool>
+                    <security>
+                        <user-name>postgres</user-name>
+                        <password>postgres</password>
+                    </security>
+                    <validation>
+                        <validate-on-match>false</validate-on-match>
+                        <background-validation>false</background-validation>
+                    </validation>
+                    <statement>
+                        <share-prepared-statements>false</share-prepared-statements>
+                    </statement>
+                </xa-datasource>
+                <drivers>
+                    <driver name="postgres" module="org.postgres">
+                        <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
+                    </driver>
+                </drivers>
+            </datasources>
+        </subsystem>
+
+ Install Maven 3.0.3 so that you can run a  'mvn clean install on the parent pom'  and then move the war created in the target directory to you deployment directory in Jboss AS 7 ...... in my case that's /Applications/jboss-as-7.1.1.Final/standalone/deployments
+
 
 

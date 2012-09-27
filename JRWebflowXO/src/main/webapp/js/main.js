@@ -11,24 +11,9 @@ var currentXoSession;
 // Retrieve XO Session list when application starts
 //findAll();
 
-// Nothing to delete or update in initial application state
-//$('#btnUpdate').hide();
+// Nothing to delete or update in initial application state//$('#btnUpdate').hide();
 //$('#btnDelete').hide();
 
-//// Register listeners
-//$('#btnSearch').click(function() {
-//search($('#searchKey').val());
-//return false;
-//});
-//
-//// Trigger search when pressing 'Return' on search key input field
-//$('#searchKey').keypress(function(e){
-//if(e.which == 13) {
-//search($('#searchKey').val());
-//e.preventDefault();
-//return false;
-//    }
-//});
 
 $('#btnAdd').click(function() {
   newXoSession(merchantID);
@@ -52,22 +37,6 @@ $('#btnDelete').click(function() {
   return false;
 });
 
-//$('#wineList a').live('click', function() {
-//findById($(this).data('identity'));
-//});
-//
-//// Replace broken images with generic wine bottle
-//$("img").error(function(){
-//  $(this).attr("src", "pics/generic.jpg");
-//
-//});
-//
-//function search(searchKey) {
-//if (searchKey == '')
-//findAll();
-//else
-//findByName(searchKey);
-//}
 
 function newXoSession(merchantId) {
   $.ajax({
@@ -78,47 +47,6 @@ function newXoSession(merchantId) {
   });
 }
 
-//	 
-//function newWine() {
-//$('#btnDelete').hide();
-//currentWine = {};
-//renderDetails(currentWine); // Display empty form
-//}
-//
-//function findAll() {
-//console.log('findAll');
-//$.ajax({
-//type: 'GET',
-//url: rootURL,
-//dataType: "json", // data type of response
-//success: renderList
-//});
-//}
-//
-//function findByName(searchKey) {
-//console.log('findByName: ' + searchKey);
-//$.ajax({
-//type: 'GET',
-//url: rootURL + '/search/' + searchKey,
-//dataType: "json",
-//success: renderList
-//});
-//}
-//
-//function findById(id) {
-//console.log('findById: ' + id);
-//$.ajax({
-//type: 'GET',
-//url: rootURL + '/' + id,
-//dataType: "json",
-//success: function(data){
-//$('#btnDelete').show();
-//console.log('findById success: ' + data.name);
-//currentWine = data;
-//renderDetails(currentWine);
-//}
-//});
-//}
 
 function commitXoSession() {
   console.log('commitXoSession');
@@ -175,15 +103,7 @@ function deleteXoSession() {
 	});
 }
 
-//function renderXOSession(data) {
-//// JAX-RS serializes an empty list as null, and a 'collection of one' as an object (not an 'array of one')
-//	var list = data == null ? [] : (data.wine instanceof Array ? data.wine : [data.wine]);
-//	
-//	$('#wineList li').remove();
-//	$.each(list, function(index, wine) {
-//	$('#wineList').append('<li><a href="#" data-identity="' + wine.id + '">'+wine.name+'</a></li>');
-//	});
-//}
+
 
 function clearForm() {
 	$('#xoSessionId').val('');

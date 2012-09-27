@@ -7,10 +7,13 @@ Deployed on JBoss AS7, Ehcache 2.5, Postgres 9.1:
 
   Setting up your environment
 
+Mac users may have to add an entry   127.0.0.1  <your machine name>   in your hosts file
+
+
  Install Oracle JDK 1.7
  Install Jboss AS 7 
  Install Postgres 9.1 or your favorite database
- Create a Data source modle in JBoss by:
+ Create a Data source module in JBoss by:
      Create a postgres directory in /Applications/jboss-as-7.1.1.Final/modules/org/
 
      Create a module.xml file in  /Applications/jboss-as-7.1.1.Final/modules/org/postgres

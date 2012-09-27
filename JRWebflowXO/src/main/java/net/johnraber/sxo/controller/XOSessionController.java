@@ -140,10 +140,11 @@ public class XOSessionController {
 	 * unlikely as updateXOSession is only operating on a newly created 
 	 * resource in cache that has not be persisted to the DB so no other 
 	 * session should likely have a handle to it.
+	 * @throws Exception 
 	 */
 	@Transactional(propagation=Propagation.REQUIRED)
 	@RequestMapping(value = "/xoSession/{xoSessionID}", method = RequestMethod.PUT)
-	public @ResponseBody XOSession updateXOSession(@PathVariable Long xoSessionID, @RequestBody XOSession xoSession) 
+	public @ResponseBody XOSession updateXOSession(@PathVariable Long xoSessionID, @RequestBody XOSession xoSession) throws Exception 
 	{
 		log.info("updating XO session: " + xoSession.getDisplayString() );	
 		return XOSessionUtility.createJsonModel(
@@ -157,10 +158,12 @@ public class XOSessionController {
 	 * for server version as the standard for now
 	 * @param xoSessionID
 	 * @return version of XO session that was persisted
+	 * @throws Exception if XO session does not exist in the 
+	 *         cache and transaction is rolled-back 
 	 */
 	@Transactional(propagation=Propagation.REQUIRED)
 	@RequestMapping(value = "/xoSessionCached/{xoSessionID}", method = RequestMethod.POST)
-	public @ResponseBody XOSession commitXOSession(@PathVariable Long xoSessionID)
+	public @ResponseBody XOSession commitXOSession(@PathVariable Long xoSessionID) throws Exception 
 	{
 		log.info("committing cached XO session with id : " + xoSessionID );	
 		 return XOSessionUtility.createJsonModel( xoService.commitXOSession(
@@ -173,11 +176,13 @@ public class XOSessionController {
 	 * @param xoSession  version of XO session that will be persisted even if a different
 	 * version of the same resource exists in cache.  XO session will be purged from 
 	 * conversational cache to persisted storage in a more archived state.
+	 * @throws Exception if XO session is null or does not exist in the 
+	 *         cache and transaction is rolled-back 
 	 */
 	@Transactional(propagation=Propagation.REQUIRED)
 	@RequestMapping(value = "/xoSession/{xoSessionID}", method = RequestMethod.POST)
 	public @ResponseBody XOSession commitXOSession(@PathVariable Long xoSessionID, @RequestBody XOSession xoSession,
-			HttpServletResponse response)
+			HttpServletResponse response) throws Exception 
 	{
 		log.info("committing XO session with ID: " +  xoSessionID );	
 		log.info("committing XO session: " + xoSession.getDisplayString() );	

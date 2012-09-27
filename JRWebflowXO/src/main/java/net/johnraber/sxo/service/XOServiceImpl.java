@@ -1,6 +1,10 @@
 package net.johnraber.sxo.service;
 
 
+import javax.annotation.Resource;
+import javax.transaction.SystemException;
+import javax.transaction.TransactionManager;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +37,14 @@ public class XOServiceImpl implements XOService
 	@Autowired
 	XOSessionDao xoSessionDao;
 	
+	@Autowired
+	TransactionManager txnMgr;
+	
 	// horrible hack for now
 	private static int cacheInited = 1;
+	
+//	@Resource
+	private boolean testRollback = true;
 	
 	
 	public XOServiceImpl()
@@ -86,9 +96,17 @@ public class XOServiceImpl implements XOService
 	}
 	
 	
-	
+	/**
+	 * Currently, last in wins but could build in merge
+	 * rules based on biz logic
+	 * 
+	 * @param xoSession
+	 * @return
+	 * @throws Exception if XO session is null or does not exist in the 
+	 *         cache and transaction is rolled-back
+	 */
 	@Transactional(propagation=Propagation.REQUIRED)
-	public XOSession updateXOSession(XOSession xoSession)
+	public XOSession updateXOSession(XOSession xoSession) throws Exception
 	{
 		ValueWrapper cachedXOSessionVW = getXoCache().get(xoSession.getXosessionId());
 		
@@ -100,12 +118,14 @@ public class XOServiceImpl implements XOService
 			// then either perform a merge based on rules or server wins and
 			// client ( aka UI ) needs to adjust
 
+		  
 			getXoCache().put(xoSession.getXosessionId(), xoSession); // this is JSR107 method
 			
 			log.info("Updated XO Session in cache: " + xoSession.getDisplayString()  );
 		}
 		else
 		{
+//			txnMgr.setRollbackOnly();
 			log.info("Could NOT updated XO Session in cache: " + xoSession.getDisplayString() + " as the entity does NOT already exist"  );
 			return null;
 		}
@@ -123,10 +143,12 @@ public class XOServiceImpl implements XOService
 	 * no data movement or processing needed ).  Use 
 	 * commitXOSession(XOSession xoSession) if you need to pass in 
 	 * changes and commit the resource.
+	 * @throws Exception if XO session does not exist in the 
+	 *         cache and transaction is rolled-back 
 	 *  
 	 */
 	@Transactional(propagation=Propagation.REQUIRED)
-	public XOSession commitXOSession(Long xoSessionID)
+	public XOSession commitXOSession(Long xoSessionID) throws Exception
 	{
 		ValueWrapper cachedXOSessionVW = getXoCache().get(xoSessionID);
 		
@@ -153,9 +175,11 @@ public class XOServiceImpl implements XOService
 	 * merge/biz rules run of the XO session.  LAST in WINS!
 	 * @param xoSession
 	 * @return
+	 * @throws Exception if XO session is null or does not exist in the 
+	 *         cache and transaction is rolled-back 
 	 */
 	@Transactional(propagation=Propagation.REQUIRED)
-	public boolean commitXOSession(XOSession xoSession)
+	public boolean commitXOSession(XOSession xoSession) throws Exception
 	{
 		//TODO use canonical/service level POJO 
 		// for XOSession and persist into database
@@ -166,6 +190,11 @@ public class XOServiceImpl implements XOService
 		//TODO in real world ensure save is not a created/merge because
 		// you want to throw if the XOSession already exists
 		xoSessionDao.saveXOSession( domainXOSession );
+		
+		if( testRollback )
+		{
+//			txnMgr.setRollbackOnly();
+		}
 		
 		getXoCache().evict( xoSession.getXosessionId() );
 		log.debug("Persisting XO Session: " + xoSession + " and removing from cache.");

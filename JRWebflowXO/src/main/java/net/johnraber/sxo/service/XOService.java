@@ -30,9 +30,10 @@ public interface XOService
 	 * 
 	 * @param xoSession
 	 * @return
+	 * @throws Exception is txn is rolled-back
 	 */
 	@Transactional(propagation=Propagation.REQUIRED)
-	XOSession updateXOSession(XOSession xoSession);
+	XOSession updateXOSession(XOSession xoSession) throws Exception;
 	
 	/**
 	 * This method assumes caller knows the current state ( server version )
@@ -42,10 +43,12 @@ public interface XOService
 	 * no data movement or processing needed ).  Use 
 	 * commitXOSession(XOSession xoSession) if you need to pass in 
 	 * changes and commit the resource.
+	 * @throws Exception if XO session does not exist in the 
+	 *         cache and transaction is rolled-back
 	 *  
 	 */
 	@Transactional(propagation=Propagation.REQUIRED)
-	public XOSession commitXOSession(Long xoSessionID);
+	public XOSession commitXOSession(Long xoSessionID) throws Exception;
 	
 	
 	/**
@@ -53,9 +56,11 @@ public interface XOService
 	 * merge/biz rules run of the XO session.  LAST in WINS!
 	 * @param xoSession
 	 * @return
+	 * @throws Exception if XO session is null or does not exist in the 
+	 *         cache and transaction is rolled-back
 	 */
 	@Transactional(propagation=Propagation.REQUIRED)
-	public boolean commitXOSession(XOSession xoSession);
+	public boolean commitXOSession(XOSession xoSession) throws Exception;
 	
 	@Transactional(propagation=Propagation.REQUIRED)
 	XOSession getArchivedXOSession(Long xoSessionID);

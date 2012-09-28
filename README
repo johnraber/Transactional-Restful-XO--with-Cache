@@ -12,7 +12,7 @@ Mac users may have to add an entry   127.0.0.1  <your machine name>   in your ho
 
  Install Oracle JDK 1.7
  Install Jboss AS 7 
- Install Postgres 9.1 or your favorite database
+ Install Postgres 9.1 AND create a schema sxo as is references in the persistent model annotations 
  Create a Data source module in JBoss by:
      Create a postgres directory in /Applications/jboss-as-7.1.1.Final/modules/org/
 

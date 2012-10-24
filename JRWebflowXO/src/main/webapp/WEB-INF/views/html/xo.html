@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
-	<meta charset="US-ASCII">
+	<meta charset="UTF-8">
+	<!--  <meta charset="US-ASCII">  -->
 	<title>One page checkout RESTful AJAX driver</title>
 	<link rel="stylesheet" href="css/styles.css" />
+	<link rel="stylesheet" type="text/css" href="css/ui-lightness/jquery-ui-1.8.24.custom.css" />
 	</head>
 	<body>
 
@@ -12,34 +14,38 @@
 		  <input type="text" id="searchKey"/>
 		  <button id="btnSearch">Search</button>
 		   -->
-		  <button id="btnAdd" type="button">Create a new Checkout Session</button>
+		 
 		</div>
 
 		<form id="xoSessionForm">
 		
+		   <button id="btnAdd" type="button">Create a new Checkout Session</button>
 			<div class="mainArea">
-			
+			    
+			     
 				<label>XO Session Id:</label>
 				<!--  <text id="xoSessionId" name="xoSessionId" type="text" disabled /> -->
 				<input id="xoSessionId" name="xoSessionId" type="text" disabled />
 				
 				<label>Merchant Id:</label>
-				<input type="merchant" id="merchant" name="merchant" required>
+				<input type="text" id="merchant" name="merchant" required>
 				
 				<label>Buyer:</label>
-				<input type="buyer" id="buyer" name="buyer"/>
+				<input type="text" id="buyer" name="buyer"/>
 				
 				<label>Item:</label>
-				<input type="item" id="item" name="item"/>
+				<input type="text" id="item" name="item"/>
 				
 				<label>Price:</label>
-				<input type="price" id="price" name="price"/>
+				<!--  <input type="number" id="price" name="price" min="0.1" max="1000000" step="10"/>  html 5 only version -->
+				<input id="price" name="price" />
 				
 				<label>Purchase Date:</label>
-				<input type="purchaseDate" id="purchaseDate" name="purchaseDate"/>
+				<!-- <input type="date" id="purchaseDate" name="purchaseDate"/>  html 5 only version -->
+				<input type="text"  id="purchaseDate" name="purchaseDate"/>
 				
 				<label>Shipping Address:</label>
-				<input type="shippingAddress" id="shippingAddress" name="shippingAddress"/>
+				<input type="text" id="shippingAddress" name="shippingAddress"/>
 				
 				<button id="btnUpdate">Update</button> 
 				<button id="btnSave">Save</button>  
@@ -47,19 +53,21 @@
 				
 			</div>
 			
-		<!-- 
+
 			<div class="rightArea">
 			
-				<img id="pic" height="300"/>
-				
-				<label>Notes:</label>
-				<textarea id="description" name="description"></textarea>
-	    </div>
-	    -->	
-	  </form>
+				    <canvas id="myCanvas" width="500" height="500">
+            <!-- Insert fallback content here -->
+   				 </canvas>
 
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
-		<script src="js/main.js"></script>
-		
+	    </div>
+	   
+	  </form>
+	  
+		<!--  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js"></script> -->
+		<script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
+		<script src="js/jquery-ui-1.8.24.custom.min.js"></script>
+		<script src="js/main.js"></script>	
   </body>
 </html>

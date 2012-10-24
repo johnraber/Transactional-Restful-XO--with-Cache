@@ -5,31 +5,27 @@ xsi:schemaLocation="http://www.springframework.org/schema/webflow
 http://www.springframework.org/schema/webflow/spring-webflow-2.3.xsd">
 
    <on-start>
-			<evaluate expression="xoService.createXOSession(merchantId)"
-			result="flowScope.xoSession" />
+			<evaluate expression="xoService.createXOSession(merchantId)" result="flowScope.xoSession" />
 	</on-start>
 
-	<view-state id="updateSession" view="updateXO.html" model="flowScope.xoSession" >
-	</view-state>
+	<view-state id="updateSession" view="updateXO.html" model="flowScope.xoSession" />
 	
 	<action-state id="updateSession">
-	  <evaluate expression="xoService.updateXOSession(sessionId)"
-		<transition to="updateSession" />
+	  <evaluate expression="xoService.updateXOSession(sessionId)" />
+		  <transition to="updateSession" />
 	</action-state>
 	
-	<action-state id="commitSession"">
-	  <evaluate expression="xoService.commitXOSession(xoSessionId)"
+	<action-state id="commitSession">
+		<evaluate expression="xoService.commitXOSession(xoSessionId)" />
 		<transition to="commitConfirmed" />
 	</action-state>
 	
 	<action-state id="deletSession">
-	  <evaluate expression="xoService.deleteXOSession(sessionId)"
+	  <evaluate expression="xoService.deleteXOSession(sessionId)" />
 		<transition to="deleteConfirmed" />
 	</action-state>
 	
-	
 	<end-state id="commitConfirmed" />
 	<end-state id="deleteConfirmed" />
-	<end-state id="xoSessionCancelled" />
- 
- </flow>
+	<end-state id="xoSessionCancelled" /> 
+</flow>

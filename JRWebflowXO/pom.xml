@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>jrprototypexo </artifactId>
+    <artifactId>jrxoprototype</artifactId>
     <groupId>net.johnraber</groupId>
     <version>1.0-SNAPSHOT</version>
   </parent>
@@ -24,10 +24,11 @@
 	    <plugins>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.2</version>
+				<version>2.3</version>
 				<configuration>
           <webResources>
             <resource>
+              <!-- this is relative to the pom.xml directory -->
               <directory>src/main/webapp/WEB-INF</directory>
               <targetPath>WEB-INF/classes/META-INF</targetPath>
               <includes>
@@ -36,19 +37,62 @@
             </resource>
           </webResources>
 				</configuration>
+				<!--  <executions>
+         don't pack the war so I can develop/deploy fast on app server 
+           <execution>
+               <id>war-exploded</id>
+               <phase>package</phase>
+               <goals>
+                   <goal>exploded</goal>
+               </goals>
+           </execution>
+        </executions>
+        -->
 	    </plugin>
 	    <plugin>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.5</version>
+				<version>2.6</version>
 			</plugin>
 	    </plugins>
 	  </build>
 	  <dependencies>
-	  <!-- running in Tomcat 7 so servlet spec is 3 -->
+	  
+	  	<!--  
+	  	<dependency>
+			<groupId>javax.ejb</groupId>
+			<artifactId>ejb-api</artifactId>
+			<version>3.0</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		
+		<dependency>
+		  <groupId>org.jboss.javaee</groupId>
+		  <artifactId>jboss-ejb-api_3.1</artifactId>
+		  <version>1.0-alpha-1</version>
+		</dependency>
+		-->
+		
+		<dependency>
+		  <groupId>org.jboss.spec.javax.ejb</groupId>
+		  <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+		  <version>1.0.2.Final</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>jboss</groupId>
+			<artifactId>jboss-annotations-ejb3</artifactId>
+			<version>4.2.3.GA</version>
+			<scope>provided</scope>
+		</dependency>
+		
+	  <!-- running in Tomcat 7 or JBoss AS 7 and want to use
+	       latest servlet spec  -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.0.1</version>
+			<scope>provided</scope>
 		</dependency>
 		
 		<!--  including btm in this web context for transaction mgr
@@ -60,12 +104,15 @@
   	</dependency>
   	-->
   	 
+  	 <!--
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<version>1.9.0</version>
 			<scope>test</scope>
 		</dependency>
+				-->
+				
 			<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.web.servlet</artifactId>
@@ -107,11 +154,11 @@
 		  <artifactId>spring-context-support</artifactId>
 		  <version>${org.springframework.version}</version>
 		</dependency>
+		
 		<!--
     Object-to-XML Mapping (OXM) abstraction and integration with JAXB, JiBX, Castor, XStream, and XML Beans.
     (depends on spring-core, spring-beans, spring-context)
-    Define this if you need OXM (org.springframework.oxm.*)
-		-->
+    Define this if you need OXM (org.springframework.oxm.*)  	-->
 		<dependency>
 		  <groupId>com.thoughtworks.xstream</groupId>
 		  <artifactId>xstream</artifactId>
@@ -122,6 +169,9 @@
 		  <artifactId>spring-oxm</artifactId>
 		  <version>${org.springframework.version}</version>
 		</dependency>
+	
+ 
+    <!-- SECURITY -->
 		<dependency>
 		    <groupId>org.springframework.security</groupId>
 		    <artifactId>spring-security-core</artifactId>
@@ -137,24 +187,30 @@
 		    <artifactId>spring-security-config</artifactId>
 		    <version>${org.springframework.security.version}</version>
 		 </dependency>
+		 
+		 
 		 <dependency>
 		    <groupId>org.springframework.webflow</groupId>
 		    <artifactId>spring-webflow</artifactId>
 		    <version>${org.springframework.webflow.version}</version>
 		 </dependency> 
+		 
 		 <!--  support client's with request header 'accept' set to 'application/json' -->
 		 <dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.9</version>
 		</dependency>
+		
+		<!--  uncomment if using Bitronix for Txn Mgr
 		<dependency>
 	        <groupId> org.codehaus.btm</groupId>
 	        <artifactId>btm</artifactId>
 	        <version>2.1.3</version>
 		</dependency>
-		
-		<!-- needed to configure Tomcat lib 
+		-->
+		<!-- needed to configure Tomcat to start and stop
+		     the transaction mgr 
 		<dependency>
 	        <groupId> org.codehaus.btm</groupId>
 	        <artifactId>btm-tomcat55-lifecycle</artifactId>
@@ -239,24 +295,49 @@
         <version>1.2.17</version>
 		</dependency> 
 		
-		<!-- added for stand-alone testing of RESTful APIs -->
+		<!-- added for stand-alone testing of RESTful APIs 
 		<dependency>
         <groupId> org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
         <version>4.2.1</version>
 		</dependency> 
+		-->
 		
 	  <dependency>
         <groupId>postgresql</groupId>
         <artifactId>postgresql</artifactId>
-        <version>9.1-901-1.jdbc4</version>
-        <scope>compile</scope>
+        <version>9.1-902.jdbc4</version>
+        <scope>provided</scope>
 		</dependency> 
 		
-		<dependency>
+	<!--  
+	<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.2.1</version>
 		</dependency> 
-	</dependencies>
+	-->	
+	
+	<!-- Need this for the Reflection builder for toString() -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency> 
+		
+	  <!-- Messaging infra 	-->
+		<dependency>
+		  <groupId>org.apache.activemq</groupId>
+		  <artifactId>activemq-core</artifactId>
+		  <version>5.7.0</version>
+	  </dependency>
+	    
+	     <!--
+		<dependency>
+		  <groupId>org.apache.camel</groupId>
+		  <artifactId>camel-core</artifactId>
+		  <version>2.10.1</version>
+		</dependency>
+		-->
+  </dependencies>
 </project>

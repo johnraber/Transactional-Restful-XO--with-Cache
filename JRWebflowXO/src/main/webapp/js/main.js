@@ -1,12 +1,22 @@
-// The root URL for the RESTful services
-// var rootURL = "http://localhost/cellar/api/wines";
 
-var rootXoURL = "http://localhost:8080/xo/xoSession";
-var rootMerchantURL = "http://localhost:8080/xo/merchant/";
+$(function() {
+	
+
+// The root URL for the RESTful services
+// var rootURL = "http://localhost/cellar/api/wines";		
+var rootXoURL = "http://localhost:8080/JRWebflowXO/xoSession";
+var rootMerchantURL = "http://localhost:8080/JRWebflowXO/merchant/";
 
 var merchantID = "9876";
 
 var currentXoSession;
+
+var canvas = $("#myCanvas");
+
+//because we’re using jQuery, we need to call the get method so we gain access to the DOM for the canvas element
+var context = canvas.get(0).getContext("2d");
+context.fillRect(40, 40, 100, 100);
+
 
 // Retrieve XO Session list when application starts
 //findAll();
@@ -32,10 +42,21 @@ $('#btnSave').click(function() {
 });
 
 
-$('#btnDelete').click(function() {
-  deleteXoSession();
-  return false;
+$('#btnDelete').click(function(evt) {
+	evt.preventDefault();	
+	deleteXoSession();
 });
+
+//$('#price').spinner({
+//	 min: 0.01,
+//	 max: 100000,
+//	 step: 10,
+//	 numberFormat: "C",
+//	 culture: 'us-US'
+//	});
+
+$('#purchaseDate').datepicker();
+
 
 
 function newXoSession(merchantId) {
@@ -138,3 +159,5 @@ function formToJSON() {
 	"shippingAddress": $('#shippingAddress').val()
 	});
 }
+
+});

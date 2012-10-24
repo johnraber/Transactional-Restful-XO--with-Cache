@@ -21,18 +21,18 @@ overflow-y: scroll;
 position: absolute;
 top: 70px;
 bottom: 20px;
-left:300px;
+left:10px;
 overflow-y: scroll;
-width:300px;
+width:250px;
 }
 
 .rightArea {
 position: absolute;
 top: 70px;
 bottom: 20px;
-left:650px;
+left:300px;
 overflow-y: scroll;
-width:270px;
+width:570px;
 }
 
 ul {

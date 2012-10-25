@@ -23,15 +23,16 @@ import javax.jms.TextMessage;
 @MessageDriven(activationConfig = {
       @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge"),
       @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
-      @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue.queue_in") }) // Note the physical name of the queue
+      @ActivationConfigProperty(propertyName = "destination", propertyValue = "java:/queue/test_in") }) // Note the physical name of the queue
 //Note: The @ResourceAdapter annotation is only required when the default messaging provider
 //is not Apache Active MQ.
 //@ResourceAdapter("activemq-rar-5.7.0.rar")
 public class TestMessageBean implements MessageListener {
  
-   @Resource(mappedName = "java:/activemq/ConnectionFactory")
+//   @Resource(mappedName = "java:/activemq/ConnectionFactory")
+   @Resource(mappedName = "java:/JmsXA")
    private ConnectionFactory connectionFactory;
-   @Resource(mappedName = "java:/activemq/queue_out") // Note the mapped name of the queue
+   @Resource(mappedName = "java:/queue/test_out") // Note the mapped name of the queue
    private Destination queue;
    private Connection connection;
  

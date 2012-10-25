@@ -53,6 +53,15 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.6</version>
 			</plugin>
+				<!--  
+				<plugin>
+				    <groupId>org.apache.maven.plugins</groupId>
+				    <artifactId>maven-ejb-plugin</artifactId>
+				    <configuration>
+				        <ejbVersion>3.0</ejbVersion>
+				    </configuration>
+				</plugin>
+				 -->
 	    </plugins>
 	  </build>
 	  <dependencies>
@@ -93,6 +102,12 @@
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.0.1</version>
 			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+		  <groupId>javax.jms</groupId>
+		  <artifactId>javax.jms-api</artifactId>
+		  <version>2.0-b06</version>
 		</dependency>
 		
 		<!--  including btm in this web context for transaction mgr
@@ -295,14 +310,6 @@
         <version>1.2.17</version>
 		</dependency> 
 		
-		<!-- added for stand-alone testing of RESTful APIs 
-		<dependency>
-        <groupId> org.apache.httpcomponents</groupId>
-        <artifactId>httpclient</artifactId>
-        <version>4.2.1</version>
-		</dependency> 
-		-->
-		
 	  <dependency>
         <groupId>postgresql</groupId>
         <artifactId>postgresql</artifactId>
@@ -325,19 +332,76 @@
 			<version>2.6</version>
 		</dependency> 
 		
-	  <!-- Messaging infra 	-->
+	  <!-- Messaging infra 	
 		<dependency>
 		  <groupId>org.apache.activemq</groupId>
 		  <artifactId>activemq-core</artifactId>
 		  <version>5.7.0</version>
+   	 <exclusions>
+        <exclusion>
+            <artifactId>javax.servlet</artifactId>
+            <groupId>servlet-api</groupId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activeio-core</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>kahadb</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.jasypt</groupId>
+            <artifactId>jasypt</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.activemq.protobuf</groupId>
+            <artifactId>activemq-protobuf</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.fusesource.mqtt-client</groupId>
+            <artifactId>mqtt-client</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-core</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jms_1.1_spec</artifactId>
+        </exclusion>
+     
+        <exclusion>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-j2ee-management_1.1_spec</artifactId>
+        </exclusion>
+        
+        <exclusion>
+            <groupId>org.fusesource.fuse-extra</groupId>
+            <artifactId>fusemq-leveldb</artifactId>
+        </exclusion>
+    	</exclusions>
 	  </dependency>
-	    
-	     <!--
-		<dependency>
-		  <groupId>org.apache.camel</groupId>
-		  <artifactId>camel-core</artifactId>
-		  <version>2.10.1</version>
-		</dependency>
-		-->
+	    -->
   </dependencies>
 </project>

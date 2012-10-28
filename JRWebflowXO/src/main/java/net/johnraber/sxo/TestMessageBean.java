@@ -15,6 +15,11 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
+import net.johnraber.sxo.service.XOServiceImpl;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 //import org.jboss.annotation.ejb.ResourceAdapter;
  
 
@@ -29,11 +34,13 @@ import javax.jms.TextMessage;
 //@ResourceAdapter("activemq-rar-5.7.0.rar")
 public class TestMessageBean implements MessageListener {
  
+	private static final Logger log = LoggerFactory.getLogger(TestMessageBean.class);
+
 //   @Resource(mappedName = "java:/activemq/ConnectionFactory")
    @Resource(mappedName = "java:/JmsXA")
    private ConnectionFactory connectionFactory;
-   @Resource(mappedName = "java:/queue/test_out") // Note the mapped name of the queue
-   private Destination queue;
+//   @Resource(mappedName = "java:/queue/test_out") // Note the mapped name of the queue
+//   private Destination queue;
    private Connection connection;
  
    public void init() throws JMSException {
@@ -46,40 +53,42 @@ public class TestMessageBean implements MessageListener {
    }
  
  
-   private void sendMessage(String text) throws JMSException {
-      Session session = null;
-      MessageProducer sender = null;
-      try {
-         session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
-         sender = session.createProducer(queue);
-         sender.setDeliveryMode(DeliveryMode.PERSISTENT);
- 
-         TextMessage response = session.createTextMessage(text);
-         sender.send(response);
-      } finally {
-         try {
-            if (sender != null) {
-               sender.close();
-            }
-         } finally {
-            if (session != null) {
-               session.close();
-            }
-         }
-      }
-   }
+//   private void sendMessage(String text) throws JMSException {
+//      Session session = null;
+//      MessageProducer sender = null;
+//      try {
+//         session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+//         sender = session.createProducer(queue);
+//         sender.setDeliveryMode(DeliveryMode.PERSISTENT);
+// 
+//         TextMessage response = session.createTextMessage(text);
+//         sender.send(response);
+//      } finally {
+//         try {
+//            if (sender != null) {
+//               sender.close();
+//            }
+//         } finally {
+//            if (session != null) {
+//               session.close();
+//            }
+//         }
+//      }
+//   }
  
     @Override
    public void onMessage(Message message) {
       try {
          init();
          String text = ((TextMessage) message).getText();
-         sendMessage("Reply for '" + text + "'");
+//         sendMessage("Reply for '" + text + "'");
+        log.info("Retrieving XO Session message from in queue: " + text  );
+//		}
       } catch (JMSException e) {
          throw new EJBException("Error in JMS operation", e);
       }
       finally {
-         try {
+        try {
             destroy();
          } catch (JMSException e) {
             throw new EJBException("Error in closing connection", e);

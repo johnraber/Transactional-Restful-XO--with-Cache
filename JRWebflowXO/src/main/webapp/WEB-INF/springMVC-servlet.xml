@@ -35,7 +35,11 @@
   <jee:jndi-lookup id="xaDataSource" jndi-name="java:/datasources/postgresXaDS" />
   
   <jee:jndi-lookup id="jboss7TxnMgr" jndi-name="java:/TransactionManager" />
-    
+  
+  <jee:jndi-lookup id="hornetJmsCF" jndi-name="java:/JmsXA" />
+  
+  <jee:jndi-lookup id="xoNotifyIn" jndi-name="java:/queue/test_in" />
+ 
   <import resource="spring-cache.xml" />
   
   <!--  scanning a package and all of its subpackages, looking for classes

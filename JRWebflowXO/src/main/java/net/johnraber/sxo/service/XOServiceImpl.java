@@ -40,11 +40,14 @@ public class XOServiceImpl implements XOService
 	@Autowired
 	TransactionManager txnMgr;
 	
+	@Autowired
+	XONotificationService xoNotificationService;
+	
 	// horrible hack for now
 	private static int cacheInited = 1;
 	
 //	@Resource
-	private boolean testRollback = true;
+	private boolean testRollback = false;
 	
 	
 	public XOServiceImpl()
@@ -120,6 +123,9 @@ public class XOServiceImpl implements XOService
 
 		  
 			getXoCache().put(xoSession.getXosessionId(), xoSession); // this is JSR107 method
+			
+			xoNotificationService.sendMessage( xoSession.toString() );
+			
 			
 			log.info("Updated XO Session in cache: " + xoSession.getDisplayString()  );
 		}
@@ -197,6 +203,9 @@ public class XOServiceImpl implements XOService
 		}
 		
 		getXoCache().evict( xoSession.getXosessionId() );
+		
+		xoNotificationService.sendMessage( domainXOSession.toString() );
+		
 		log.debug("Persisting XO Session: " + xoSession + " and removing from cache.");
 		
 		return true;

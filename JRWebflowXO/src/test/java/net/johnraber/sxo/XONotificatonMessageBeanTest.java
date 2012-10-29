@@ -32,9 +32,9 @@ import org.slf4j.LoggerFactory;
 //Note: The @ResourceAdapter annotation is only required when the default messaging provider
 //is not Apache Active MQ.
 //@ResourceAdapter("activemq-rar-5.7.0.rar")
-public class TestMessageBean implements MessageListener {
+public class XONotificatonMessageBeanTest implements MessageListener {
  
-	private static final Logger log = LoggerFactory.getLogger(TestMessageBean.class);
+	private static final Logger log = LoggerFactory.getLogger(XONotificatonMessageBeanTest.class);
 
 //   @Resource(mappedName = "java:/activemq/ConnectionFactory")
    @Resource(mappedName = "java:/JmsXA")

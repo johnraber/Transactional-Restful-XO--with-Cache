@@ -124,9 +124,6 @@ public class XOServiceImpl implements XOService
 		  
 			getXoCache().put(xoSession.getXosessionId(), xoSession); // this is JSR107 method
 			
-			xoNotificationService.sendMessage( xoSession.toString() );
-			
-			
 			log.info("Updated XO Session in cache: " + xoSession.getDisplayString()  );
 		}
 		else

@@ -98,12 +98,15 @@ function updateXoSession() {
 
 function deleteXoSession() {
 	// check for null XO session id
-	console.log('deleteXoSession');
-	$.ajax({
-	type: 'DELETE',
-	url: rootXoURL + '/' + $('#xoSessionId').val(),
-	success: clearForm
-	});
+	if( $('#xoSessionId').val().length != 0 )
+    {
+		console.log('deleteXoSession');
+		$.ajax({
+		type: 'DELETE',
+		url: rootXoURL + '/' + $('#xoSessionId').val(),
+		success: clearForm
+		});
+    }
 }
 
 

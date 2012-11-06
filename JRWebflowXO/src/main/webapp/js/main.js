@@ -2,8 +2,7 @@
 $(function() {
 	
 
-// The root URL for the RESTful services
-// var rootURL = "http://localhost/cellar/api/wines";		
+// The root URL for the RESTful services	
 var rootXoURL = "http://localhost:8080/JRWebflowXO/xoSession";
 var rootMerchantURL = "http://localhost:8080/JRWebflowXO/merchant/";
 
@@ -11,11 +10,10 @@ var merchantID = "9876";
 
 var currentXoSession;
 
-var canvas = $("#myCanvas");
-
+//var canvas = $("#myCanvas");
 //because we’re using jQuery, we need to call the get method so we gain access to the DOM for the canvas element
-var context = canvas.get(0).getContext("2d");
-context.fillRect(40, 40, 100, 100);
+//var context = canvas.get(0).getContext("2d");
+//context.fillRect(40, 40, 100, 100);
 
 
 // Retrieve XO Session list when application starts
@@ -25,20 +23,20 @@ context.fillRect(40, 40, 100, 100);
 //$('#btnDelete').hide();
 
 
-$('#btnAdd').click(function() {
+$('#btnAdd').click(function(evt) {
+  evt.preventDefault();	
   newXoSession(merchantID);
-  return false;
 });
 
 
-$('#btnUpdate').click(function() {
+$('#btnUpdate').click(function(evt) {
+  evt.preventDefault();	
   updateXoSession();
-  return false;
 });
 
-$('#btnSave').click(function() {
+$('#btnSave').click(function(evt) {
+  evt.preventDefault();	
   commitXoSession();
-  return false;
 });
 
 
@@ -47,15 +45,15 @@ $('#btnDelete').click(function(evt) {
 	deleteXoSession();
 });
 
-//$('#price').spinner({
-//	 min: 0.01,
-//	 max: 100000,
-//	 step: 10,
-//	 numberFormat: "C",
-//	 culture: 'us-US'
-//	});
+$.ajaxSetup({
+    error: function(xhr){
+        alert('Request Status: ' + xhr.status + ' Status Text: ' + xhr.statusText + ' ' + xhr.responseText);
+    }
+});
 
-$('#purchaseDate').datepicker();
+
+
+var purchaseDatePicker = $('#purchaseDate').datepicker();
 
 
 
@@ -64,7 +62,10 @@ function newXoSession(merchantId) {
     url: rootMerchantURL + merchantId,
     type: "POST",
     dataType: "json",
-   	success: renderXoSession
+   	success: function(data){
+   		clearForm();
+   		renderXoSession(data);
+   	}
   });
 }
 
@@ -78,14 +79,6 @@ function commitXoSession() {
     dataType: "json",
     data: formToJSON(),
     success: clearForm
-//success: function(data, textStatus, jqXHR){
-//alert('Wine created successfully');
-//$('#btnDelete').show();
-//$('#wineId').val(data.id);
-//},
-//error: function(jqXHR, textStatus, errorThrown){
-//alert('addWine error: ' + textStatus);
-//}
   });
 }
 
@@ -97,30 +90,19 @@ function updateXoSession() {
     url: rootXoURL + '/' + $('#xoSessionId').val(),
     dataType: "json",
     data: formToJSON(),
-    success: renderXoSession
-    //function(data, textStatus, jqXHR){
-//    	$('#btnUpdate').show();
-//    	$('#btnDelete').show();	
-//    	alert('XO Session updated successfully');
-//  },
-//    error: function(jqXHR, textStatus, errorThrown){
-//    alert('updateXoSession error: ' + textStatus);
-//    }
+    success: function(data){
+    	renderXoSession(data);
+    }
   });
 }
 
 function deleteXoSession() {
+	// check for null XO session id
 	console.log('deleteXoSession');
 	$.ajax({
 	type: 'DELETE',
 	url: rootXoURL + '/' + $('#xoSessionId').val(),
 	success: clearForm
-//	success: function(data, textStatus, jqXHR){
-//		alert('Wine deleted successfully');
-//		},
-//		error: function(jqXHR, textStatus, errorThrown){
-//			alert('deleteWine error');
-//		}
 	});
 }
 
@@ -143,7 +125,7 @@ function renderXoSession(xoSession) {
 	$('#buyer').val(xoSession.buyer);
 	$('#item').val(xoSession.item);
 	$('#price').val(xoSession.price);
-	$('#purchaseDate').val(xoSession.purchaseDate);
+	purchaseDatePicker("setDate", xoSession.purchaseDate);
 	$('#shippingAddress').val(xoSession.shippingAddress);
 }
 
@@ -155,7 +137,7 @@ function formToJSON() {
 	"buyer": $('#buyer').val(),
 	"item": $('#item').val(),
 	"price": $('#price').val(),
-	"purchaseDate": $('#purchaseDate').val(),
+	"purchaseDate": $('#purchaseDate').datepicker("getDate"),
 	"shippingAddress": $('#shippingAddress').val()
 	});
 }

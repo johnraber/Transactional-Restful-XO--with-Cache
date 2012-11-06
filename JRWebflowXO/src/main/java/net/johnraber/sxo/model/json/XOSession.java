@@ -1,6 +1,7 @@
 package net.johnraber.sxo.model.json;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
@@ -40,13 +41,13 @@ public class XOSession implements Serializable
 		private String item;
 		
 	    @JsonProperty
-		private String price;
+		private BigDecimal price;
 		
 	    @JsonProperty
 		private Date purchaseDate;
 		
 	    @JsonProperty
-		private Date shippingAddress;
+		private String shippingAddress;
 		
 		public long getXosessionId() {
 			return xosessionId;
@@ -72,10 +73,10 @@ public class XOSession implements Serializable
 		public void setItem(String item) {
 			this.item = item;
 		}
-		public String getPrice() {
+		public BigDecimal getPrice() {
 			return price;
 		}
-		public void setPrice(String price) {
+		public void setPrice(BigDecimal price) {
 			this.price = price;
 		}
 		public Date getPurchaseDate() {
@@ -84,10 +85,10 @@ public class XOSession implements Serializable
 		public void setPurchaseDate(Date purchaseDate) {
 			this.purchaseDate = purchaseDate;
 		}
-		public Date getShippingAddress() {
+		public String getShippingAddress() {
 			return shippingAddress;
 		}
-		public void setShippingAddress(Date shippingAddress) {
+		public void setShippingAddress(String shippingAddress) {
 			this.shippingAddress = shippingAddress;
 		}
 		

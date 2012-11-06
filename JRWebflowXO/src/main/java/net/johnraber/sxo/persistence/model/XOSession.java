@@ -1,5 +1,6 @@
 package net.johnraber.sxo.persistence.model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -43,13 +44,13 @@ public class XOSession
 		private String item;
 		
 		@Column(name = "price", unique = false, nullable = true, insertable = true, updatable = true)
-		private String price;
+		private BigDecimal price;
 		
 		@Column(name = "purchaseDate", unique = false, nullable = true, insertable = true, updatable = true)
 		private Date purchaseDate;
 		
 		@Column(name = "shippingAddress", unique = false, nullable = true, insertable = true, updatable = true)
-		private Date shippingAddress;
+		private String shippingAddress;
 		
 		public long getXosessionId() {
 			return xosessionId;
@@ -75,10 +76,10 @@ public class XOSession
 		public void setItem(String item) {
 			this.item = item;
 		}
-		public String getPrice() {
+		public BigDecimal getPrice() {
 			return price;
 		}
-		public void setPrice(String price) {
+		public void setPrice(BigDecimal price) {
 			this.price = price;
 		}
 		public Date getPurchaseDate() {
@@ -87,10 +88,10 @@ public class XOSession
 		public void setPurchaseDate(Date purchaseDate) {
 			this.purchaseDate = purchaseDate;
 		}
-		public Date getShippingAddress() {
+		public String getShippingAddress() {
 			return shippingAddress;
 		}
-		public void setShippingAddress(Date shippingAddress) {
+		public void setShippingAddress(String shippingAddress) {
 			this.shippingAddress = shippingAddress;
 		}
 		

@@ -152,23 +152,23 @@ public class XOSessionController {
 	}
 	
 
-	/**
-	 * Haven't figured out a good way to distinguish resource vs resource cached 
-	 * in the pathing so using /'<resource>'/id for caller version and /'<resource>Cached'/id 
-	 * for server version as the standard for now
-	 * @param xoSessionID
-	 * @return version of XO session that was persisted
-	 * @throws Exception if XO session does not exist in the 
-	 *         cache and transaction is rolled-back 
-	 */
-	@Transactional(propagation=Propagation.REQUIRED)
-	@RequestMapping(value = "/xoSessionCached/{xoSessionID}", method = RequestMethod.POST)
-	public @ResponseBody XOSession commitXOSession(@PathVariable Long xoSessionID) throws Exception 
-	{
-		log.info("committing cached XO session with id : " + xoSessionID );	
-		 return XOSessionUtility.createJsonModel( xoService.commitXOSession(
-				 xoSessionID) );
-	}
+//	/**
+//	 * Haven't figured out a good way to distinguish resource vs resource cached 
+//	 * in the pathing so using /'<resource>'/id for caller version and /'<resource>Cached'/id 
+//	 * for server version as the standard for now
+//	 * @param xoSessionID
+//	 * @return version of XO session that was persisted
+//	 * @throws Exception if XO session does not exist in the 
+//	 *         cache and transaction is rolled-back 
+//	 */
+//	@Transactional(propagation=Propagation.REQUIRED)
+//	@RequestMapping(value = "/xoSessionCached/{xoSessionID}", method = RequestMethod.POST)
+//	public @ResponseBody XOSession commitXOSession(@PathVariable Long xoSessionID) throws Exception 
+//	{
+//		log.info("committing cached XO session with id : " + xoSessionID );	
+//		 return XOSessionUtility.createJsonModel( xoService.commitXOSession(
+//				 xoSessionID) );
+//	}
 	
 	/**
 	 * 

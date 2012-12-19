@@ -7,6 +7,8 @@ import java.util.Random;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+import net.sf.ehcache.util.TimeUtil;
+
 
 /**
  * Concurrency promises to perform certain task faster as these tasks can be
@@ -37,16 +39,22 @@ public class ConcurrencyService
 	    long sum = 0;
 	    System.out.println(list.size());
 	    
+	    long timeoutVal = 500;
+	    TimeUnit timeoutUnit = TimeUnit.MILLISECONDS;
+	    
 	    // Now retrieve the result
 	    for (Future<Long> future : list)
 	    {
 	      try {
-	        sum += future.get();
+	        sum += future.get(timeoutVal, timeoutUnit);
 	      } catch (InterruptedException e) {
 	        e.printStackTrace();
 	      } catch (ExecutionException e) {
 	        e.printStackTrace();
-	      }
+	      } catch (TimeoutException e) {
+			//no worries cause did not meet time SLA of 'timeoutVal'
+			e.printStackTrace();
+		}
 	    }
 	    System.out.println(sum);
 	    executor.shutdown();

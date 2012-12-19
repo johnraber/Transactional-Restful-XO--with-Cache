@@ -6,6 +6,13 @@ $(function() {
 var rootXoURL = "http://localhost:8080/JRWebflowXO/xoSession";
 var rootMerchantURL = "http://localhost:8080/JRWebflowXO/merchant/";
 
+
+//When launched in "page embedded" mode a flow will not issue flow execution redirects during Ajax requests.
+//The mode=embedded parameter only needs to be passed when launching the flow. Your only
+//other concern is to use Ajax requests and to render only the content required to update the portion of the
+//page displaying the flow.
+// /hotels/booking?mode=embedded
+
 var merchantID = "9876";
 
 var currentXoSession;
@@ -53,10 +60,6 @@ $.ajaxSetup({
 
 
 
-var purchaseDatePicker = $('#purchaseDate').datepicker();
-
-
-
 function newXoSession(merchantId) {
   $.ajax({
     url: rootMerchantURL + merchantId,
@@ -76,6 +79,7 @@ function commitXoSession() {
     type: 'POST',
     contentType: 'application/json',
     url: rootXoURL + '/' + $('#xoSessionId').val(),
+    headers: {serviceVersion: 1},
     dataType: "json",
     data: formToJSON(),
     success: clearForm
@@ -123,12 +127,13 @@ function clearForm() {
 
 
 function renderXoSession(xoSession) {
+	console.log(xoSession);
 	$('#xoSessionId').val(xoSession.xosessionId);
 	$('#merchant').val(xoSession.merchant);
 	$('#buyer').val(xoSession.buyer);
 	$('#item').val(xoSession.item);
 	$('#price').val(xoSession.price);
-	purchaseDatePicker("setDate", xoSession.purchaseDate);
+	$('#purchaseDate').datepicker("setDate", xoSession.purchaseDate);
 	$('#shippingAddress').val(xoSession.shippingAddress);
 }
 

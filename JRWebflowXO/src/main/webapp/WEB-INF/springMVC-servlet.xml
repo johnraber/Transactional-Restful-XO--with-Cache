@@ -28,7 +28,7 @@
 		
   <!-- 
     <import resource="spring-security.xml"/>
-    <import resource="spring-webflow.xml"/>
+  
    --> 
    		
   <!--  created in JBoss 7 container JNDI  -->    
@@ -168,6 +168,8 @@
 	   default Servlet.  This tag is Spring's DefaultServletHttpRequestHandler -->
 	 <mvc:default-servlet-handler/>
     
+   <import resource="spring-webflow.xml"/>
+     
     <!--
     <bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
 	    <property name="brokerURL">

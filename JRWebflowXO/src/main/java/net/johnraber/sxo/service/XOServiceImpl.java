@@ -41,6 +41,9 @@ public class XOServiceImpl implements XOService
 	TransactionManager txnMgr;
 	
 	@Autowired
+	XOUpdateService xoUpdateService;
+	
+	@Autowired
 	XONotificationService xoNotificationService;
 	
 	// horrible hack for now
@@ -122,9 +125,17 @@ public class XOServiceImpl implements XOService
 			// client ( aka UI ) needs to adjust
 
 		  
-			getXoCache().put(xoSession.getXosessionId(), xoSession); // this is JSR107 method
 			
-			log.info("Updated XO Session in cache: " + xoSession.getDisplayString()  );
+			if( xoUpdateService.updateSession( xoSession ) )
+			{
+				getXoCache().put(xoSession.getXosessionId(), xoSession); // this is JSR107 method
+				log.info("Updated XO Session in cache: " + xoSession.getDisplayString()  );
+			}
+			else
+			{
+				log.info("Failed to updated XO Session: " + xoSession.getDisplayString()  );
+				xoSession = null;
+			}
 		}
 		else
 		{
